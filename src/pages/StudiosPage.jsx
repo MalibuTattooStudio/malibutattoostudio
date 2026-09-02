@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Compass, ExternalLink, Calendar, CheckCircle2, Sparkles, Layers, Camera, UserCheck, Star } from 'lucide-react';
+import { MapPin, Compass, ExternalLink, CheckCircle2, Sparkles, Layers, Camera, UserCheck, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StudiosPage({ onOpenBooking, setCursorHover, language }) {
@@ -90,17 +90,18 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
             NUESTROS <span className="text-orange-gradient font-serif-title italic font-normal">ESTUDIOS</span>
           </h1>
           <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto">
-            {isEs ? 'Dos localizaciones físicas exclusivas en Tenerife. Haz clic sobre cualquier tatuador para ver su perfil y pedir cita directa.' : 'Two physical flagship studios in Tenerife with dedicated resident artists.'}
+            {isEs ? 'Dos localizaciones físicas exclusivas en Tenerife, cada una con su ambiente y su equipo de artistas residentes.' : 'Two physical flagship studios in Tenerife, each with its own vibe and resident artists.'}
           </p>
         </div>
 
         {/* INTERACTIVE MODE SWITCHER */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
+        <div className="-mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-none mb-16">
+          <div className="flex items-center gap-3 w-max sm:w-auto sm:flex-wrap sm:justify-center">
           <button
             onClick={() => setFilterMode('all')}
             onMouseEnter={() => setCursorHover(true, 'AMBOS')}
             onMouseLeave={() => setCursorHover(false)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
+            className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
               filterMode === 'all'
                 ? 'bg-[#ff5500] text-black shadow-[0_0_25px_rgba(255,85,0,0.5)]'
                 : 'glass-panel text-slate-400 hover:text-white border border-white/10'
@@ -114,7 +115,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
             onClick={() => setFilterMode('santacruz')}
             onMouseEnter={() => setCursorHover(true, 'SANTA CRUZ')}
             onMouseLeave={() => setCursorHover(false)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
+            className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
               filterMode === 'santacruz'
                 ? 'bg-[#ff5500] text-black shadow-[0_0_25px_rgba(255,85,0,0.5)]'
                 : 'glass-panel text-slate-400 hover:text-white border border-white/10'
@@ -128,7 +129,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
             onClick={() => setFilterMode('tabaiba')}
             onMouseEnter={() => setCursorHover(true, 'TABAIBA')}
             onMouseLeave={() => setCursorHover(false)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
+            className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
               filterMode === 'tabaiba'
                 ? 'bg-[#00f0ff] text-black shadow-[0_0_25px_rgba(0,240,255,0.5)]'
                 : 'glass-panel text-slate-400 hover:text-white border border-white/10'
@@ -137,6 +138,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
             <MapPin className="w-4 h-4 text-[#00f0ff]" />
             <span>Tabaiba Baja (Costa)</span>
           </button>
+          </div>
         </div>
 
         {/* STUDIOS CARDS WITH PROMINENT CIRCULAR ARTIST AVATAR SLOTS ROW */}
@@ -254,12 +256,14 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
 
                   {/* EXTRAORDINARY CIRCULAR ARTIST AVATARS ROUTING TO /artista/:slug */}
                   <div className="pt-6 border-t border-white/10 space-y-5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
                       <h4 className="text-xs font-extrabold uppercase tracking-widest text-white font-mono flex items-center gap-2">
-                        <UserCheck className="w-4 h-4" style={{ color: studio.primaryColor }} />
-                        <span>{isEs ? 'TATUADORES RESIDENTES EN ESTE ESTUDIO' : 'RESIDENT ARTISTS'}</span>
+                        <UserCheck className="w-4 h-4 shrink-0" style={{ color: studio.primaryColor }} />
+                        <span>{isEs ? 'Tatuadores residentes' : 'Resident artists'}</span>
                       </h4>
-                      <span className="text-xs font-mono text-slate-400">({studio.artists.length} Residentes)</span>
+                      <span className="text-xs font-mono text-slate-400 pl-6 sm:pl-0">
+                        {studio.artists.length} {isEs ? 'residentes' : 'artists'}
+                      </span>
                     </div>
 
                     <div className="flex flex-wrap items-center justify-start sm:justify-between gap-6 sm:gap-8 pt-2">

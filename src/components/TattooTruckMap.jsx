@@ -253,7 +253,7 @@ const TattooTruckMap = ({ language = 'es', setCursorHover = () => {} }) => {
           </Marker>
         ))}
 
-        {events.map((event, idx) => (
+        {events.map((event) => (
           <Marker key={event.id} position={event.position} icon={createCustomIcon('pulse')}>
             <Popup>
               <div className="p-0 flex flex-col">

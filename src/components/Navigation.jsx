@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Globe, Calendar, Menu, X } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { id: 'studios', path: '/estudios', labelEs: 'Estudios', labelEn: 'Studios' },
@@ -20,20 +20,25 @@ export default function Navigation({
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mouseX, setMouseX] = useState(50);
+  const lightSpotRef = useRef(null);
   const isEs = language === 'es';
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Solid nav whenever scrolled, or on any inner route (no hero to sit over there)
+  const solidNav = isScrolled || location.pathname !== '/';
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    // Move the underline light-spot with the cursor via a ref — no re-render per mousemove
     const handleMouseMove = (e) => {
-      const percentage = (e.clientX / window.innerWidth) * 100;
-      setMouseX(percentage);
+      if (lightSpotRef.current) {
+        lightSpotRef.current.style.left = `${(e.clientX / window.innerWidth) * 100}%`;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -71,8 +76,8 @@ export default function Navigation({
         animate={{ y: 0 }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-600 ${
-          isScrolled 
-            ? 'py-3 bg-[#070709]/85 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.6)]' 
+          solidNav
+            ? 'py-3 bg-[#070709]/95 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.6)] border-b border-white/[0.06]'
             : 'py-6 bg-transparent'
         }`}
       >
@@ -87,18 +92,18 @@ export default function Navigation({
           >
             {/* Small decorative emblem */}
             <div className={`rounded-full border border-[#ff5500]/40 overflow-hidden transition-all duration-500 group-hover:border-[#ff5500] group-hover:shadow-[0_0_20px_rgba(255,85,0,0.3)] ${
-              isScrolled ? 'w-8 h-8' : 'w-10 h-10'
+              solidNav ? 'w-8 h-8' : 'w-10 h-10'
             }`}>
-              <img 
-                src="/assets/logo.jpg" 
-                alt="Malibu" 
+              <img
+                src="/assets/logo.jpg"
+                alt="Malibu"
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             <div className="flex flex-col">
               <span className={`font-heading font-extrabold tracking-[0.08em] text-white uppercase leading-none group-hover:text-[#ff5500] transition-colors duration-300 ${
-                isScrolled ? 'text-base' : 'text-lg'
+                solidNav ? 'text-base' : 'text-lg'
               }`}>
                 MALIBU
               </span>
@@ -201,16 +206,17 @@ export default function Navigation({
 
         {/* ── INTERACTIVE EXPANDING LINE FROM CENTER TO SIDES ── */}
         <div className="absolute bottom-0 left-0 right-0 h-[1.5px] overflow-hidden pointer-events-none">
-          <motion.div 
+          <motion.div
             initial={{ scaleX: 0 }}
-            animate={{ scaleX: isScrolled ? 1 : 0.4 }}
+            animate={{ scaleX: solidNav ? 1 : 0.4 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="w-full h-full bg-gradient-to-r from-transparent via-[#ff5500] to-transparent origin-center opacity-80"
           />
-          {/* Interactive mouse light spot */}
-          <div 
-            className="absolute top-0 bottom-0 w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#ffaa66] to-transparent transition-all duration-150 ease-out opacity-90"
-            style={{ left: `${mouseX}%` }}
+          {/* Interactive mouse light spot (position set via ref, no re-render) */}
+          <div
+            ref={lightSpotRef}
+            className="absolute top-0 bottom-0 w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#ffaa66] to-transparent transition-[left] duration-150 ease-out opacity-90 hidden lg:block"
+            style={{ left: '50%' }}
           />
         </div>
 

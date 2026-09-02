@@ -1,9 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Camera, Phone, Mail, Sparkles } from 'lucide-react';
-import InstagramFeed from '../components/InstagramFeed';
+import { useGallery } from '../hooks/useGallery';
+import GalleryGrid from '../components/gallery/GalleryGrid';
 
-export default function ArtistProfilePage({ setCursorHover, language }) {
+export default function ArtistProfilePage({ onOpenBooking, setCursorHover, language }) {
   const { slug } = useParams();
   const isEs = language === 'es';
 
@@ -23,7 +24,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Fundador y Maestro Tatuador de Malibu Tattoo Studio en Tabaiba Baja. Especializado en composiciones freestyle de gran formato, proyectos orgánicos en Blackwork y realismo oscuro de máxima expresión artística.'
         : 'Founder & Master Artist at Malibu Tattoo Studio in Tabaiba Baja. Specialized in large-scale freestyle blackwork and dark realism.',
       specialties: ['Freestyle Custom', 'Dark Realism', 'Large Scale Blackwork', 'Freehand Flow'],
-      portfolio: ['/assets/artwork1.jpg', '/assets/artwork2.jpg', '/assets/artwork3.jpg', '/assets/artwork4.jpg']
     },
     iria: {
       name: 'Iria Tattoo',
@@ -39,7 +39,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Especialista en trazos ultra-finos, microrealismo botánico de máxima delicadeza e ilustración poética en el estudio boutique frente al mar de Tabaiba Baja.'
         : 'Specialist in ultra-fine line work, botanical illustrations and microrealism in Tabaiba Baja.',
       specialties: ['Fine Line Ultra-Delicado', 'Microrealismo', 'Ilustración Botánica', 'Minimalismo'],
-      portfolio: ['/assets/artwork2.jpg', '/assets/artwork1.jpg', '/assets/artwork3.jpg']
     },
     aditii: {
       name: 'Aditii Tattoo',
@@ -55,7 +54,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Residente en nuestro estudio principal de Santa Cruz. Maestra del ornamentalismo corporal, simetría mística y geometría sagrada trazada en perfecta armonía con la anatomía.'
         : 'Resident at Santa Cruz flagship studio. Master of sacred geometry, ornamental flows, and custom lettering.',
       specialties: ['Geometría Sagrada', 'Ornamentalismo Corporal', 'MANDALAS & Simetría', 'Custom Lettering'],
-      portfolio: ['/assets/artwork3.jpg', '/assets/artwork4.jpg', '/assets/artwork1.jpg']
     },
     pidol: {
       name: 'Pidol BodyArt',
@@ -71,7 +69,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Artista de Neo Tradicional y especialista de perforaciones corporales. Disponible en nuestro estudio principal de Santa Cruz y activaciones en el TattooTruck.'
         : 'Neo Traditional artist & body piercing specialist across Santa Cruz and TattooTruck.',
       specialties: ['Neo Tradicional Color', 'Piercing Profesional', 'Ilustración Custom', 'Cover-ups'],
-      portfolio: ['/assets/artwork4.jpg', '/assets/artwork2.jpg', '/assets/artwork1.jpg']
     },
     yaxtattoo: {
       name: 'Yax Tattoo',
@@ -87,7 +84,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Tatuador en Tabaiba Baja y artista estrella en activaciones móviles del TattooTruck. Diseños flash de inspiración japonesa e ilustración personalizada.'
         : 'Resident artist at Tabaiba Baja & mobile event activations in the TattooTruck.',
       specialties: ['Custom Ink', 'Japanese Flash', 'Blackwork', 'Illustrative Flash'],
-      portfolio: ['/assets/artwork2.jpg', '/assets/artwork1.jpg', '/assets/artwork4.jpg']
     },
     aurea: {
       name: 'Aurea Tattoo',
@@ -103,7 +99,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Especializada en arte ilustrativo, composición fina y motivos ornamentales únicos en nuestro estudio de Tabaiba Baja.'
         : 'Specialized in illustrative art, fine composition and unique ornamental motifs in Tabaiba Baja.',
       specialties: ['Illustrative Art', 'Fine Line', 'Ornamental Flow', 'Dotwork'],
-      portfolio: ['/assets/artwork1.jpg', '/assets/artwork3.jpg', '/assets/artwork2.jpg']
     },
     karitorres: {
       name: 'Kari Torres',
@@ -119,7 +114,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Estilo ilustrativo sutil, trazos minimalistas elegantes y alta precisión en el estudio urbano de Santa Cruz de Tenerife.'
         : 'Illustrative minimal fine line tattoos at our Santa Cruz flagship studio.',
       specialties: ['Minimal Fine Line', 'Micro Tattoos', 'Minimalist Art', 'Botanical Line'],
-      portfolio: ['/assets/artwork2.jpg', '/assets/artwork3.jpg', '/assets/artwork1.jpg']
     },
     honnari: {
       name: 'Honnari Tattoo',
@@ -135,7 +129,6 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Especialista en tatuaje tradicional japonés Irezumi, composiciones orientales clásicas y piezas personalizadas de gran impacto visual en Santa Cruz.'
         : 'Specialist in traditional Japanese Irezumi and oriental compositions in Santa Cruz.',
       specialties: ['Irezumi Tradicional', 'Dragones y Carpas Koi', 'Oriental Blackwork', 'Sleeves Japonesas'],
-      portfolio: ['/assets/artwork2.jpg', '/assets/artwork4.jpg', '/assets/artwork1.jpg']
     },
     erios: {
       name: 'EriOS Tattoo',
@@ -151,12 +144,14 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
         ? 'Especialista en realismo en sombras, técnica Black & Grey y sombreados de alta profundidad en nuestro estudio de Santa Cruz.'
         : 'Specialist in dark realism, Black & Grey shading and high contrast tattoo work in Santa Cruz.',
       specialties: ['Dark Realism', 'Black & Grey', 'Retratos en Sombra', 'Chicano Style'],
-      portfolio: ['/assets/artwork3.jpg', '/assets/artwork1.jpg', '/assets/artwork4.jpg']
     }
   };
 
   const key = slug?.toLowerCase() || 'yenko';
   const artist = artistsData[key];
+
+  // Portfolio pieces for this artist, from Supabase (empty → "coming soon")
+  const { items: artistWorks, loading: worksLoading } = useGallery({ artistSlug: key });
 
   // Show 404 for invalid artist slugs
   if (!artist) {
@@ -282,43 +277,34 @@ export default function ArtistProfilePage({ setCursorHover, language }) {
 
         {/* ARTIST INDIVIDUAL PORTFOLIO GALLERY */}
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <h3 className="text-2xl font-black uppercase text-white font-heading">
-              PORTAFOLIO DE <span className="text-orange-gradient italic font-normal font-serif-title">{artist.name}</span>
+              {isEs ? 'PORTAFOLIO DE ' : 'PORTFOLIO — '}
+              <span className="text-orange-gradient italic font-normal font-serif-title">{artist.name}</span>
             </h3>
             <a
               href={artist.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onMouseEnter={() => setCursorHover?.(true, 'INSTAGRAM')}
+              onMouseLeave={() => setCursorHover?.(false)}
               className="text-xs font-mono text-pink-400 hover:underline flex items-center gap-1.5"
             >
               <Camera className="w-4 h-4" />
-              <span>Ver más en Instagram</span>
+              <span>{isEs ? 'Ver más en Instagram' : 'More on Instagram'}</span>
             </a>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {artist.portfolio.map((img, pIdx) => (
-              <div key={pIdx} className="relative rounded-2xl overflow-hidden border border-white/10 h-72 group">
-                <img src={img} alt={`Artwork by ${artist.name}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4">
-                  <span className="text-xs text-white font-mono font-bold">Malibu Original Piece</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* AUTOMATIC LIVE INSTAGRAM FEED FOR THIS ARTIST */}
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <InstagramFeed
-              feedUrl={artist.instagramFeedUrl || 'https://feeds.behold.so/eEBBeqqjBcTrYjz4wrVS'}
-              igHandle={artist.handle}
-              igUrl={artist.instagramUrl}
-              artistMention={artist.handle}
-              language={language}
-            />
-          </div>
+          <GalleryGrid
+            items={artistWorks}
+            loading={worksLoading}
+            onOpenBooking={onOpenBooking}
+            setCursorHover={setCursorHover}
+            language={language}
+            masonry="columns-2 lg:columns-3"
+            showFilters={false}
+            skeletonCount={6}
+          />
         </div>
 
       </div>

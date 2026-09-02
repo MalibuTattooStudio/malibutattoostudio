@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import CustomCursor from './components/CustomCursor';
 import HeroCanvas from './components/HeroCanvas';
@@ -20,6 +20,9 @@ import GalleryPage from './pages/GalleryPage';
 import ArtistsPage from './pages/ArtistsPage';
 import ArtistProfilePage from './pages/ArtistProfilePage';
 
+// Internal gallery manager — lazy so it never touches the public bundle path
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+
 function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
   const location = useLocation();
 
@@ -27,7 +30,7 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
   React.useEffect(() => {
     setCursorHover(false);
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [location.pathname]);
+  }, [location.pathname, setCursorHover]);
 
   return (
     <PageTransition>
@@ -36,12 +39,6 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
         <Route path="/" element={
           <main className="relative z-10">
             <Hero
-              onOpenBooking={handleOpenBooking}
-              setCursorHover={setCursorHover}
-              language={language}
-            />
-
-            <TattooTruckSection
               onOpenBooking={handleOpenBooking}
               setCursorHover={setCursorHover}
               language={language}
@@ -60,7 +57,11 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
             />
 
             <ArtistSection
-              onOpenBooking={handleOpenBooking}
+              setCursorHover={setCursorHover}
+              language={language}
+            />
+
+            <TattooTruckSection
               setCursorHover={setCursorHover}
               language={language}
             />
@@ -106,6 +107,7 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
         {/* Dedicated Individual Artist Page */}
         <Route path="/artista/:slug" element={
           <ArtistProfilePage
+            onOpenBooking={handleOpenBooking}
             setCursorHover={setCursorHover}
             language={language}
           />
@@ -115,72 +117,84 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
   );
 }
 
-export default function App() {
+function SiteShell() {
   const [activeTab, setActiveTab] = useState('hero');
   const [language, setLanguage] = useState('es');
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingLocation, setBookingLocation] = useState('santacruz');
-  
+
   // Custom Cursor state
   const [cursorHover, setCursorHoverState] = useState(false);
   const [cursorText, setCursorText] = useState('');
   const [cursorPreviewData, setCursorPreviewData] = useState(null);
 
-  const setCursorHover = (hover, text = '', previewData = null) => {
+  const setCursorHover = useCallback((hover, text = '', previewData = null) => {
     setCursorHoverState(hover);
     setCursorText(text);
     setCursorPreviewData(previewData);
-  };
+  }, []);
 
-  const handleOpenBooking = (loc = 'santacruz') => {
+  const handleOpenBooking = useCallback((loc = 'santacruz') => {
     setBookingLocation(loc);
     setBookingOpen(true);
-  };
+  }, []);
 
   return (
+    <div className="relative min-h-screen bg-[#070709] text-slate-100 bg-noise selection:bg-[#ff5500] selection:text-black">
+      {/* Dynamic Custom Cursor with Floating Photo Preview */}
+      <CustomCursor isHovered={cursorHover} cursorText={cursorText} previewData={cursorPreviewData} />
+
+      {/* Active Theory WebGL Fluid Background */}
+      <HeroCanvas />
+
+      {/* Active Theory Tech HUD Overlay */}
+      <TechOverlay />
+
+      {/* Glassmorphic Navigation */}
+      <Navigation
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        language={language}
+        setLanguage={setLanguage}
+        onOpenBooking={handleOpenBooking}
+        setCursorHover={setCursorHover}
+      />
+
+      {/* Animated Routes Container */}
+      <AnimatedAppRoutes
+        handleOpenBooking={handleOpenBooking}
+        setCursorHover={setCursorHover}
+        language={language}
+      />
+
+      {/* Footer */}
+      <Footer onOpenBooking={handleOpenBooking} language={language} />
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        initialLocation={bookingLocation}
+        language={language}
+      />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
     <Router>
-      <div className="relative min-h-screen bg-[#070709] text-slate-100 bg-noise selection:bg-[#ff5500] selection:text-black">
-        
-        {/* Dynamic Custom Cursor with Floating Photo Preview */}
-        <CustomCursor isHovered={cursorHover} cursorText={cursorText} previewData={cursorPreviewData} />
-
-        {/* Active Theory WebGL Fluid Background */}
-        <HeroCanvas />
-
-        {/* Active Theory Tech HUD Overlay */}
-        <TechOverlay />
-
-        {/* Glassmorphic Navigation */}
-        <Navigation
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          language={language}
-          setLanguage={setLanguage}
-          onOpenBooking={handleOpenBooking}
-          setCursorHover={setCursorHover}
+      <Routes>
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={<div className="min-h-screen bg-[#070709]" />}>
+              <AdminPage />
+            </Suspense>
+          }
         />
-
-        {/* Animated Routes Container */}
-        <AnimatedAppRoutes
-          handleOpenBooking={handleOpenBooking}
-          setCursorHover={setCursorHover}
-          language={language}
-        />
-
-        {/* Footer */}
-        <Footer
-          onOpenBooking={handleOpenBooking}
-          language={language}
-        />
-
-        {/* Booking Modal */}
-        <BookingModal
-          isOpen={bookingOpen}
-          onClose={() => setBookingOpen(false)}
-          initialLocation={bookingLocation}
-          language={language}
-        />
-      </div>
+        <Route path="/*" element={<SiteShell />} />
+      </Routes>
     </Router>
   );
 }

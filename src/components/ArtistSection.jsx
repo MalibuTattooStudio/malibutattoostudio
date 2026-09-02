@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { UserCheck, Camera, MapPin, Truck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function ArtistSection({ onOpenBooking, setCursorHover, language }) {
+export default function ArtistSection({ setCursorHover, language }) {
   const isEs = language === 'es';
   const [selectedStudio, setSelectedStudio] = useState('all');
 
@@ -144,31 +144,33 @@ export default function ArtistSection({ onOpenBooking, setCursorHover, language 
         </div>
 
         {/* STUDIO FILTER TABS */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-          {[
-            { id: 'all', label: isEs ? 'Todos los Artistas' : 'All Artists', icon: UserCheck },
-            { id: 'santacruz', label: 'Santa Cruz', icon: MapPin },
-            { id: 'tabaiba', label: 'Tabaiba Baja', icon: MapPin },
-            { id: 'tattootruck', label: 'TattooTruck', icon: Truck }
-          ].map(tab => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedStudio(tab.id)}
-                onMouseEnter={() => setCursorHover(true, 'FILTRAR')}
-                onMouseLeave={() => setCursorHover(false)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
-                  selectedStudio === tab.id
-                    ? 'bg-[#ff5500] text-black shadow-[0_0_20px_rgba(255,85,0,0.5)]'
-                    : 'glass-panel text-slate-400 hover:text-white border border-white/10'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+        <div className="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-none mb-12">
+          <div className="flex items-center gap-2.5 w-max sm:w-auto sm:flex-wrap sm:justify-center">
+            {[
+              { id: 'all', label: isEs ? 'Todos los Artistas' : 'All Artists', icon: UserCheck },
+              { id: 'santacruz', label: 'Santa Cruz', icon: MapPin },
+              { id: 'tabaiba', label: 'Tabaiba Baja', icon: MapPin },
+              { id: 'tattootruck', label: 'TattooTruck', icon: Truck }
+            ].map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedStudio(tab.id)}
+                  onMouseEnter={() => setCursorHover(true, 'FILTRAR')}
+                  onMouseLeave={() => setCursorHover(false)}
+                  className={`shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
+                    selectedStudio === tab.id
+                      ? 'bg-[#ff5500] text-black shadow-[0_0_20px_rgba(255,85,0,0.5)]'
+                      : 'glass-panel text-slate-400 hover:text-white border border-white/10'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* ARTISTS GRID */}

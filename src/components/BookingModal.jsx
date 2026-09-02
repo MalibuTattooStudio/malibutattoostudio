@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Truck, CheckCircle2, Send, Calendar, Clock, Sparkles, UserCheck, Heart, ShieldCheck } from 'lucide-react';
+import { X, MapPin, Truck, CheckCircle2, Send, Sparkles, UserCheck, Heart, ShieldCheck } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 // Placeholder credentials for future replacement

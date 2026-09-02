@@ -78,11 +78,11 @@ export default function TechOverlay() {
         <span className="tracking-widest uppercase">TENERIFE • CANARIAS</span>
       </div>
 
-      {/* CORNER HUD BRACKETS */}
-      <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#ff5500]/30 pointer-events-none" />
-      <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#ff5500]/30 pointer-events-none" />
-      <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#ff5500]/30 pointer-events-none" />
-      <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#ff5500]/30 pointer-events-none" />
+      {/* CORNER HUD BRACKETS (desktop only — reads as clipping on small screens) */}
+      <div className="hidden md:block absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#ff5500]/30 pointer-events-none" />
+      <div className="hidden md:block absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#ff5500]/30 pointer-events-none" />
+      <div className="hidden md:block absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#ff5500]/30 pointer-events-none" />
+      <div className="hidden md:block absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#ff5500]/30 pointer-events-none" />
 
     </div>
   );
