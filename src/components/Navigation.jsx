@@ -232,12 +232,12 @@ export default function Navigation({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
             className="fixed inset-0 z-50 bg-[#070709] flex flex-col overflow-y-auto"
           >
             {/* Top bar with close */}
-            <div className="flex items-center justify-between px-6 py-6">
-              <div className="flex items-center gap-3" onClick={scrollToTop}>
+            <div className="flex items-center justify-between px-6 py-5">
+              <div className="flex items-center gap-2.5" onClick={scrollToTop}>
                 <div className="w-8 h-8 rounded-full border border-[#ff5500]/40 overflow-hidden">
                   <img src="/assets/logo.jpg" alt="Malibu" className="w-full h-full object-cover" />
                 </div>
@@ -247,45 +247,50 @@ export default function Navigation({
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-zinc-400 hover:text-white transition-colors p-2"
+                aria-label={isEs ? 'Cerrar menú' : 'Close menu'}
+                className="text-zinc-400 hover:text-white transition-colors p-2 -mr-2"
               >
-                <X size={28} strokeWidth={1} />
+                <X size={26} strokeWidth={1.5} />
               </button>
             </div>
 
-            {/* Large nav links */}
-            <div className="flex-1 flex flex-col justify-center items-start px-8 sm:px-12 gap-3 sm:gap-2">
+            {/* Nav links */}
+            <nav className="flex-1 flex flex-col justify-center px-6 divide-y divide-white/[0.06]">
               {navLinks.map((link, i) => {
                 const label = isEs ? link.labelEs : link.labelEn;
                 const isActive = location.pathname === link.path || (location.pathname === '/' && activeTab === link.id);
 
                 return (
-                  <motion.div
+                  <motion.button
                     key={link.id}
-                    initial={{ opacity: 0, x: -28 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.04 + i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    type="button"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 + i * 0.04, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => handleNavClick(link)}
-                    className="cursor-pointer group py-2"
+                    className="group flex items-center gap-4 py-5 w-full text-left"
                   >
-                    <span className={`font-heading font-extrabold text-[2rem] sm:text-5xl uppercase tracking-tight leading-none transition-colors duration-300 ${
-                      isActive
-                        ? 'text-[#ff5500]'
-                        : 'text-zinc-700 group-hover:text-white'
+                    <span className={`font-mono text-[0.7rem] tracking-widest tabular-nums transition-colors ${
+                      isActive ? 'text-[#ff5500]' : 'text-zinc-600'
+                    }`}>
+                      0{i + 1}
+                    </span>
+                    <span className={`font-heading font-bold text-[1.85rem] sm:text-4xl uppercase tracking-tight leading-none transition-colors ${
+                      isActive ? 'text-[#ff5500]' : 'text-zinc-200 group-active:text-white'
                     }`}>
                       {label}
                     </span>
-                  </motion.div>
+                  </motion.button>
                 );
               })}
-            </div>
+            </nav>
 
             {/* Bottom actions */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="px-8 sm:px-12 pb-10 space-y-6"
+              transition={{ delay: 0.24, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="px-6 sm:px-8 pb-10 space-y-6"
             >
               <div className="h-px w-full bg-white/[0.06]" />
               

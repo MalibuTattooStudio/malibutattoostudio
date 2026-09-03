@@ -33,7 +33,7 @@ export default function TechOverlay() {
           <span className="font-bold">{fps} FPS</span>
         </div>
         <span className="text-white/20">|</span>
-        <span className="text-slate-300">ACTIVE THEORY CORE v2.4</span>
+        <span className="text-slate-300">CORE v2.3</span>
         <span className="text-white/20">|</span>
         <span className="text-cyan-400 font-semibold">28.4704° N, 16.2501° W</span>
       </div>
