@@ -198,9 +198,10 @@ export default function Navigation({
             onClick={() => setIsMobileMenuOpen(true)}
             onMouseEnter={() => setCursorHover(true, 'MENÚ')}
             onMouseLeave={() => setCursorHover(false)}
-            className="lg:hidden text-white cursor-none p-1"
+            aria-label={isEs ? 'Abrir menú' : 'Open menu'}
+            className="lg:hidden text-white cursor-none p-2 -mr-2"
           >
-            <Menu size={22} strokeWidth={1.5} />
+            <Menu size={26} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -231,8 +232,8 @@ export default function Navigation({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-50 bg-[#070709] flex flex-col"
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 bg-[#070709] flex flex-col overflow-y-auto"
           >
             {/* Top bar with close */}
             <div className="flex items-center justify-between px-6 py-6">
@@ -253,7 +254,7 @@ export default function Navigation({
             </div>
 
             {/* Large nav links */}
-            <div className="flex-1 flex flex-col justify-center items-start px-8 sm:px-12 gap-2">
+            <div className="flex-1 flex flex-col justify-center items-start px-8 sm:px-12 gap-3 sm:gap-2">
               {navLinks.map((link, i) => {
                 const label = isEs ? link.labelEs : link.labelEn;
                 const isActive = location.pathname === link.path || (location.pathname === '/' && activeTab === link.id);
@@ -261,16 +262,15 @@ export default function Navigation({
                 return (
                   <motion.div
                     key={link.id}
-                    initial={{ opacity: 0, x: -40 }}
+                    initial={{ opacity: 0, x: -28 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ delay: 0.08 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ delay: 0.04 + i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => handleNavClick(link)}
                     className="cursor-pointer group py-2"
                   >
-                    <span className={`font-heading font-extrabold text-[2.5rem] sm:text-5xl uppercase tracking-tight transition-colors duration-300 ${
+                    <span className={`font-heading font-extrabold text-[2rem] sm:text-5xl uppercase tracking-tight leading-none transition-colors duration-300 ${
                       isActive
-                        ? 'text-[#ff5500]' 
+                        ? 'text-[#ff5500]'
                         : 'text-zinc-700 group-hover:text-white'
                     }`}>
                       {label}
@@ -282,9 +282,9 @@ export default function Navigation({
 
             {/* Bottom actions */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.5 }}
+              transition={{ delay: 0.28, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="px-8 sm:px-12 pb-10 space-y-6"
             >
               <div className="h-px w-full bg-white/[0.06]" />

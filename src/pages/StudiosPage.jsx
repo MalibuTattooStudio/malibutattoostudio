@@ -266,7 +266,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-start sm:justify-between gap-6 sm:gap-8 pt-2">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-between gap-7 sm:gap-8 pt-2">
                       {studio.artists.map((artist, aIdx) => (
                         <Link
                           key={aIdx}
@@ -276,10 +276,10 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                           className="group flex flex-col items-center text-center space-y-2.5 cursor-none relative"
                         >
                           {/* EXTRAORDINARY CIRCLE AVATAR CONTAINER */}
-                          <motion.div 
+                          <motion.div
                             whileHover={{ scale: 1.15, rotate: 2 }}
                             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                            className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center"
+                            className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center"
                           >
                             {/* Outer Spinning Dash Ring */}
                             <svg className="absolute inset-0 w-full h-full animate-spin pointer-events-none" style={{ animationDuration: '18s' }} viewBox="0 0 100 100">
@@ -302,8 +302,8 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                             />
 
                             {/* Inner Circle Frame */}
-                            <div 
-                              className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 p-0.5 bg-black/90 shadow-xl overflow-hidden group-hover:border-pink-500 transition-colors"
+                            <div
+                              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 p-0.5 bg-black/90 shadow-xl overflow-hidden group-hover:border-pink-500 transition-colors"
                               style={{ borderColor: studio.primaryColor }}
                             >
                               {artist.image ? (

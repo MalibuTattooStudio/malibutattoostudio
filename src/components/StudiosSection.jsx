@@ -87,7 +87,7 @@ export default function StudiosSection({ onOpenBooking, setCursorHover, language
                 <ImageWithSkeleton
                   src={studio.image}
                   alt={studio.shortName}
-                  className="aspect-[4/3] sm:aspect-[16/11]"
+                  className="aspect-square"
                   imgClassName="group-hover:scale-[1.04] transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5 pointer-events-none" />
