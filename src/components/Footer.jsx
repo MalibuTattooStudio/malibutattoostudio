@@ -35,7 +35,7 @@ export default function Footer({ onOpenBooking, language }) {
     <footer className="bg-[#050507] border-t border-white/10 pt-16 pb-12 relative z-10 overflow-hidden text-left font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 pb-12 border-b border-white/10">
           
           {/* COL 1: BRAND WITH LOGO EMBLEM */}
           <div className="space-y-4 md:col-span-1">
@@ -123,17 +123,20 @@ export default function Footer({ onOpenBooking, language }) {
         </div>
 
         {/* BOTTOM COPYRIGHT & MADEDIGITAL SIGNATURE */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-mono">
-          <p className="madedigital-container inline-flex items-center flex-wrap gap-1">
-            <span>© {new Date().getFullYear()} MALIBU TATTOO STUDIO • TENERIFE. Todos los derechos reservados. Hecho con</span>
-            <Heart className="w-4 h-4 text-[#ff3366] fill-current heartbeat-icon mx-0.5 inline-block shrink-0" />
-            <span>por</span>
-            <a href="https://madedigital.es" target="_blank" rel="noopener noreferrer" className="madedigital-link ml-1">
-              madedigital.es
-            </a>
-            <span>.</span>
+        <div className="pt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 text-xs text-slate-400 font-mono">
+          <p className="madedigital-container text-center sm:text-left leading-relaxed">
+            © {new Date().getFullYear()} MALIBU TATTOO STUDIO • TENERIFE. Todos los derechos reservados.
+            <span className="mt-1 block sm:mt-0 sm:inline">
+              <span className="hidden sm:inline"> · </span>
+              Hecho con{' '}
+              <Heart className="w-3.5 h-3.5 text-[#ff3366] fill-current heartbeat-icon inline-block align-[-0.15em]" />
+              {' '}por{' '}
+              <a href="https://madedigital.es" target="_blank" rel="noopener noreferrer" className="madedigital-link">
+                madedigital.es
+              </a>
+            </span>
           </p>
-          <div className="flex items-center gap-6 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2 text-[11px] shrink-0">
             <a href="https://www.instagram.com/malibutattoostudio/" target="_blank" rel="noopener noreferrer" className="hover:text-slate-200 transition-colors">Instagram</a>
             <a href="#" className="hover:text-slate-200 transition-colors">Aviso Legal</a>
             <a href="#" className="hover:text-slate-200 transition-colors">Sanidad Homologada</a>
