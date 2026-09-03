@@ -190,7 +190,7 @@ export default function ArtistSection({ setCursorHover, language }) {
                 <div>
                   <Link
                     to={`/artista/${artist.slug}`}
-                    onMouseEnter={() => setCursorHover(true, 'VER FICHA', artist)}
+                    onMouseEnter={() => setCursorHover(true, 'VER FICHA')}
                     onMouseLeave={() => setCursorHover(false)}
                     className="block cursor-none"
                   >

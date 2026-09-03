@@ -41,7 +41,7 @@ export default function GalleryPage({ onOpenBooking, setCursorHover, language })
           onOpenBooking={onOpenBooking}
           setCursorHover={setCursorHover}
           language={language}
-          masonry="columns-2 md:columns-3 xl:columns-4"
+          masonry="columns-2 md:columns-3 lg:columns-4 xl:columns-5"
           showArtistFilter
           skeletonCount={12}
         />

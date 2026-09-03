@@ -95,7 +95,7 @@ export default function CustomCursor({ cursorText, isHovered, previewData }) {
       {/* Outer ring / capsule */}
       <motion.div
         className={`fixed left-0 top-0 flex items-center justify-center rounded-full border border-[#ff5500]/70 bg-[#ff5500]/10 transition-colors duration-300 pointer-events-none ${
-          isHovered ? 'bg-[#ff5500] text-black border-[#ff5500] shadow-[0_0_30px_#ff5500]' : ''
+          isHovered ? 'bg-[#ff5500] text-white border-[#ff5500] shadow-[0_0_30px_#ff5500]' : ''
         }`}
         animate={{
           x: mousePosition.x - (isHovered ? 45 : 20),
@@ -110,7 +110,7 @@ export default function CustomCursor({ cursorText, isHovered, previewData }) {
           <motion.span
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-[80px] text-[10px] font-extrabold uppercase tracking-wider text-black text-center leading-tight px-1 font-heading line-clamp-2"
+            className="max-w-[80px] text-[10px] font-extrabold uppercase tracking-wider text-white text-center leading-tight px-1 font-heading line-clamp-2"
           >
             {cursorText}
           </motion.span>

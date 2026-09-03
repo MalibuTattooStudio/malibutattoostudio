@@ -46,10 +46,10 @@ export default function GallerySection({ onOpenBooking, setCursorHover, language
           onOpenBooking={onOpenBooking}
           setCursorHover={setCursorHover}
           language={language}
-          masonry="columns-2 md:columns-3"
+          masonry="columns-2 md:columns-3 lg:columns-4"
           showFilters={false}
-          limit={9}
-          skeletonCount={6}
+          limit={12}
+          skeletonCount={8}
         />
 
         {items.length > 0 && (
