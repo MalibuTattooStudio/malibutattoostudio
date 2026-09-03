@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Truck, CheckCircle2, Send, Sparkles, UserCheck, Heart, ShieldCheck } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 // Placeholder credentials for future replacement
 const CONTACT_CONFIG = {
@@ -86,11 +85,13 @@ export default function BookingModal({ isOpen, onClose, initialLocation = 'santa
     e.preventDefault();
     setSubmitted(true);
 
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ['#ff5500', '#ff7700', '#ffffff', '#00f0ff']
+    import('canvas-confetti').then(({ default: confetti }) => {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#ff5500', '#ff7700', '#ffffff', '#00f0ff']
+      });
     });
   };
 

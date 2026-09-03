@@ -1,7 +1,6 @@
 import React, { useState, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import CustomCursor from './components/CustomCursor';
-import HeroCanvas from './components/HeroCanvas';
 import TechOverlay from './components/TechOverlay';
 import Navigation from './components/Navigation';
 import PageTransition from './components/PageTransition';
@@ -22,6 +21,9 @@ import ArtistProfilePage from './pages/ArtistProfilePage';
 
 // Internal gallery manager — lazy so it never touches the public bundle path
 const AdminPage = lazy(() => import('./pages/AdminPage'));
+
+// WebGL fluid background — lazy so three.js stays out of the critical path
+const HeroCanvas = lazy(() => import('./components/HeroCanvas'));
 
 function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
   const location = useLocation();
@@ -145,7 +147,9 @@ function SiteShell() {
       <CustomCursor isHovered={cursorHover} cursorText={cursorText} previewData={cursorPreviewData} />
 
       {/* Active Theory WebGL Fluid Background */}
-      <HeroCanvas />
+      <Suspense fallback={null}>
+        <HeroCanvas />
+      </Suspense>
 
       {/* Active Theory Tech HUD Overlay */}
       <TechOverlay />
