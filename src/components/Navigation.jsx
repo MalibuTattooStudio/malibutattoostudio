@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Globe, Calendar, Menu, X } from 'lucide-react';
+import { Globe, Calendar, Menu, X } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import InstagramIcon from './icons/InstagramIcon';
 
 const navLinks = [
   { id: 'studios', path: '/estudios', labelEs: 'Estudios', labelEn: 'Studios' },
@@ -162,7 +163,7 @@ export default function Navigation({
               onMouseLeave={() => setCursorHover(false)}
               className="text-zinc-500 hover:text-white transition-colors duration-300 cursor-none"
             >
-              <Camera size={17} strokeWidth={1.5} />
+              <InstagramIcon size={17} strokeWidth={1.5} />
             </a>
             
             {/* Language Toggle */}
@@ -302,7 +303,7 @@ export default function Navigation({
                     rel="noopener noreferrer"
                     className="text-zinc-500 hover:text-white transition-colors text-sm flex items-center gap-2"
                   >
-                    <Camera size={18} />
+                    <InstagramIcon size={18} />
                     <span className="font-mono text-xs tracking-wider">@malibutattoostudio</span>
                   </a>
                 </div>

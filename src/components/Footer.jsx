@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Camera, Truck, Heart, ExternalLink } from 'lucide-react';
+import { MapPin, Truck, Heart, ExternalLink } from 'lucide-react';
+import InstagramIcon from './icons/InstagramIcon';
 
 // Isolated clock component to prevent full Footer re-renders every second
 function TenerifeClock() {
@@ -57,7 +58,7 @@ export default function Footer({ onOpenBooking, language }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-xs font-bold text-pink-400 hover:bg-pink-500/20 transition-all font-mono"
             >
-              <Camera className="w-3.5 h-3.5" />
+              <InstagramIcon className="w-3.5 h-3.5" />
               <span>@malibutattoostudio</span>
             </a>
 

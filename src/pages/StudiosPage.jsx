@@ -169,7 +169,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                   {/* TOP MAIN CONTENT GRID (IMAGE + DETAILS) */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                     {/* Studio Main Photo */}
-                    <div className={`lg:col-span-7 relative group rounded-2xl overflow-hidden border border-white/15 h-[360px] sm:h-[460px] ${
+                    <div className={`lg:col-span-7 relative group rounded-2xl overflow-hidden border border-white/15 aspect-square lg:aspect-[4/3] ${
                       index % 2 === 1 ? 'lg:order-2' : ''
                     }`}>
                       <img
