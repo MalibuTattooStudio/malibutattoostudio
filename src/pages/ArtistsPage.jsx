@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserCheck, Camera, MapPin, Truck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { studioColor } from '../data/studios';
 
 export default function ArtistsPage({ setCursorHover, language }) {
   const isEs = language === 'es';
@@ -178,9 +179,14 @@ export default function ArtistsPage({ setCursorHover, language }) {
                 onClick={() => setSelectedStudio(tab.id)}
                 onMouseEnter={() => setCursorHover(true, 'FILTRAR')}
                 onMouseLeave={() => setCursorHover(false)}
+                style={
+                  selectedStudio === tab.id
+                    ? { backgroundColor: studioColor(tab.id), boxShadow: `0 0 20px ${studioColor(tab.id)}80` }
+                    : undefined
+                }
                 className={`shrink-0 px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all duration-300 ${
                   selectedStudio === tab.id
-                    ? 'bg-[#ff5500] text-black shadow-[0_0_20px_rgba(255,85,0,0.5)]'
+                    ? 'text-black'
                     : 'glass-panel text-slate-400 hover:text-white border border-white/10'
                 }`}
               >
@@ -219,7 +225,10 @@ export default function ArtistsPage({ setCursorHover, language }) {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-85" />
                       
-                      <div className="absolute top-4 left-4 flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-widest text-black bg-[#ff5500] px-3 py-1 rounded-full font-mono">
+                      <div
+                        style={{ backgroundColor: studioColor(artist.studios[0]) }}
+                        className="absolute top-4 left-4 flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-widest text-black px-3 py-1 rounded-full font-mono"
+                      >
                         {artist.studios.includes('tattootruck') ? <Truck className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
                         <span>{artist.studioBadge}</span>
                       </div>
