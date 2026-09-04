@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MessageSquareQuote, ArrowUpRight, ChevronDown } from 'lucide-react';
 import GoogleIcon from './icons/GoogleIcon';
 import { ReviewCard, ReviewModal } from './ReviewsSection';
 import { useReviews, useStudioStats } from '../hooks/useReviews';
 
+function shuffled(list) {
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 /**
  * Per-studio reviews block for /estudios — a grid (not the landing marquee),
  * showing 6 by default with a "ver todas" expand so the page doesn't turn
- * into a wall of testimonials.
+ * into a wall of testimonials. Order is reshuffled once per page load (not
+ * on every re-render) so repeat visits surface a different sample.
  */
 export default function StudioReviews({ studio, accent, setCursorHover, language }) {
   const isEs = language === 'es';
@@ -16,10 +26,12 @@ export default function StudioReviews({ studio, accent, setCursorHover, language
   const [expanded, setExpanded] = useState(false);
   const [openReview, setOpenReview] = useState(null);
 
+  const shuffledReviews = useMemo(() => shuffled(reviews), [reviews]);
+
   if (!loading && reviews.length === 0) return null;
 
   const s = stats[studio];
-  const visible = expanded ? reviews : reviews.slice(0, 6);
+  const visible = expanded ? shuffledReviews : shuffledReviews.slice(0, 6);
 
   return (
     <div className="pt-6 border-t border-white/10 space-y-5">
