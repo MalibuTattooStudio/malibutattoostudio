@@ -10,6 +10,7 @@ import StudiosSection from './components/StudiosSection';
 import GallerySection from './components/GallerySection';
 import ArtistSection from './components/ArtistSection';
 import ReviewsSection from './components/ReviewsSection';
+import SignalDivider from './components/SignalDivider';
 import BookingModal from './components/BookingModal';
 import Footer from './components/Footer';
 
@@ -64,15 +65,17 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
               language={language}
             />
 
+            <TattooTruckSection
+              setCursorHover={setCursorHover}
+              language={language}
+            />
+
             <ReviewsSection
               setCursorHover={setCursorHover}
               language={language}
             />
 
-            <TattooTruckSection
-              setCursorHover={setCursorHover}
-              language={language}
-            />
+            <SignalDivider language={language} />
           </main>
         } />
 

@@ -366,3 +366,37 @@ section::before {
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════
+   SIGNAL DIVIDER — reviews → footer transition
+   ═══════════════════════════════════════════ */
+@keyframes signal-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes signal-glow-pulse {
+  0%, 100% { opacity: 0.55; r: 42px; }
+  50%      { opacity: 0.9;  r: 50px; }
+}
+
+@keyframes signal-core-pulse {
+  0%, 100% { opacity: 0.7; r: 4.5px; }
+  50%      { opacity: 1;   r: 6px; }
+}
+
+.signal-glow {
+  animation: signal-glow-pulse 3.2s ease-in-out infinite;
+}
+
+.signal-core {
+  animation: signal-core-pulse 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-pulses { display: none; }
+  .signal-glow,
+  .signal-core {
+    animation: none;
+  }
+}
