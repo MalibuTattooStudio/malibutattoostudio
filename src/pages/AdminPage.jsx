@@ -49,7 +49,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-[#070709]">
-      <form onSubmit={submit} className="w-full max-w-sm glass-panel rounded-3xl border border-white/10 p-8 space-y-5">
+      <form onSubmit={submit} className="w-full max-w-sm bg-[#0f0f14] rounded-3xl border border-white/10 p-8 space-y-5">
         <div className="space-y-1 text-center">
           <h1 className="text-xl font-black uppercase text-white font-heading tracking-wide">
             Panel · <span className="text-orange-gradient font-serif-title italic font-normal">Malibu</span>
@@ -181,7 +181,7 @@ function Uploader({ onDone, artists, lockedArtist }) {
   };
 
   return (
-    <div className="glass-panel rounded-3xl border border-white/10 p-5 sm:p-6 space-y-5">
+    <div className="bg-[#0f0f14] rounded-3xl border border-white/10 p-5 sm:p-6 space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Field label="Artista">
           {lockedArtist ? (
@@ -288,7 +288,7 @@ function PieceRow({ piece, onChange, onDelete }) {
   };
 
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden flex flex-col">
+    <div className="bg-[#0f0f14] rounded-2xl border border-white/10 overflow-hidden flex flex-col">
       <div className="relative aspect-[4/5] bg-black/40">
         <img src={piece.image_url} alt={piece.title || ''} loading="lazy" className="w-full h-full object-cover" />
         {piece.status !== 'published' && (
@@ -452,7 +452,7 @@ function ArtistForm({ artist, isAdmin, onSaved, onBack, onDeleted }) {
   };
 
   return (
-    <div className="glass-panel rounded-3xl border border-white/10 p-5 sm:p-7 space-y-5">
+    <div className="bg-[#0f0f14] rounded-3xl border border-white/10 p-5 sm:p-7 space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {onBack && (
@@ -598,7 +598,7 @@ function NewArtistForm({ onCreated, onCancel }) {
   };
 
   return (
-    <div className="glass-panel rounded-3xl border border-white/10 p-5 sm:p-6 space-y-4">
+    <div className="bg-[#0f0f14] rounded-3xl border border-white/10 p-5 sm:p-6 space-y-4">
       <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 font-mono">Nuevo artista</h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Field label="Slug (URL, ej. yenko)">
@@ -686,7 +686,7 @@ function ArtistsManager() {
           <button
             key={a.id}
             onClick={() => setEditing(a)}
-            className="glass-panel rounded-2xl border border-white/10 overflow-hidden flex flex-col text-left hover:border-[#ff5500]/50 transition-colors"
+            className="bg-[#0f0f14] rounded-2xl border border-white/10 overflow-hidden flex flex-col text-left hover:border-[#ff5500]/50 transition-colors"
           >
             <div className="relative aspect-[4/5] bg-black/40">
               {a.portrait_url
@@ -742,7 +742,7 @@ function AdminConsole() {
           <h1 className="text-lg font-black uppercase font-heading tracking-wide">
             Panel · <span className="text-orange-gradient font-serif-title italic font-normal">Malibu</span>
           </h1>
-          <div className="flex items-center gap-1 glass-panel rounded-full border border-white/10 p-1">
+          <div className="flex items-center gap-1 bg-[#0f0f14] rounded-full border border-white/10 p-1">
             <Tab id="gallery" icon={Images} label="Galería" />
             <Tab id="artists" icon={Users} label="Artistas" />
           </div>
