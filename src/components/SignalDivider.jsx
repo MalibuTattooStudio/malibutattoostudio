@@ -31,7 +31,7 @@ export default function SignalDivider({ language }) {
       <svg
         viewBox="0 0 1200 220"
         preserveAspectRatio="xMidYMid meet"
-        className="w-full h-[150px] sm:h-[200px] lg:h-[220px] block"
+        className="relative w-full h-[150px] sm:h-[200px] lg:h-[220px] block"
       >
         <defs>
           <linearGradient id="wireLeft" x1="0" y1="0" x2="1" y2="0">
