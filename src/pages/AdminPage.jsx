@@ -111,6 +111,15 @@ function FullScreenSpinner() {
   );
 }
 
+// one shared <datalist> for every style input (uploader + piece cards)
+function StylesDatalist() {
+  return (
+    <datalist id="admin-styles">
+      {STYLES.map((s) => <option key={s} value={s} />)}
+    </datalist>
+  );
+}
+
 /* ---------------------------------------------------------------- uploader -- */
 
 function Uploader({ onDone, artists, lockedArtist }) {
@@ -119,9 +128,9 @@ function Uploader({ onDone, artists, lockedArtist }) {
     [lockedArtist, artists],
   );
   const [artistSlug, setArtistSlug] = useState(options[0]?.slug || '');
-  const [style, setStyle] = useState('');
+  const [bulkStyle, setBulkStyle] = useState('');
   const [status, setStatus] = useState('published');
-  const [items, setItems] = useState([]); // { file, url, title }
+  const [items, setItems] = useState([]); // { file, url, title, style }
   const [progress, setProgress] = useState(null); // { done, total, error }
   const inputRef = useRef(null);
 
@@ -142,9 +151,15 @@ function Uploader({ onDone, artists, lockedArtist }) {
   const addFiles = (fileList) => {
     const next = Array.from(fileList)
       .filter((f) => f.type.startsWith('image/'))
-      .map((f) => ({ file: f, url: URL.createObjectURL(f), title: '' }));
+      .map((f) => ({ file: f, url: URL.createObjectURL(f), title: '', style: bulkStyle }));
     setItems((prev) => [...prev, ...next]);
   };
+
+  const patchItem = (i, patch) =>
+    setItems((prev) => prev.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
+
+  const applyBulkStyle = () =>
+    setItems((prev) => prev.map((p) => ({ ...p, style: bulkStyle })));
 
   const removeAt = (i) => {
     setItems((prev) => {
@@ -163,7 +178,7 @@ function Uploader({ onDone, artists, lockedArtist }) {
           file: it.file,
           artistName: artist.name,
           artistSlug: artist.slug,
-          style,
+          style: it.style,
           title: it.title,
           status,
         });
@@ -182,7 +197,7 @@ function Uploader({ onDone, artists, lockedArtist }) {
 
   return (
     <div className="bg-[#0f0f14] rounded-3xl border border-white/10 p-5 sm:p-6 space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field label="Artista">
           {lockedArtist ? (
             <div className={`${inputCls} text-slate-300`}>{lockedArtist.name}</div>
@@ -193,19 +208,6 @@ function Uploader({ onDone, artists, lockedArtist }) {
               ))}
             </select>
           )}
-        </Field>
-
-        <Field label="Estilo">
-          <input
-            list="admin-styles"
-            value={style}
-            onChange={(e) => setStyle(e.target.value)}
-            placeholder="Blackwork…"
-            className={inputCls}
-          />
-          <datalist id="admin-styles">
-            {STYLES.map((s) => <option key={s} value={s} />)}
-          </datalist>
         </Field>
 
         <Field label="Estado">
@@ -231,6 +233,25 @@ function Uploader({ onDone, artists, lockedArtist }) {
 
       {items.length > 0 && (
         <>
+          <div className="flex items-end gap-2">
+            <Field label="Estilo para todas">
+              <input
+                list="admin-styles"
+                value={bulkStyle}
+                onChange={(e) => setBulkStyle(e.target.value)}
+                placeholder="Blackwork…"
+                className={inputCls}
+              />
+            </Field>
+            <button
+              type="button"
+              onClick={applyBulkStyle}
+              className="shrink-0 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white"
+            >
+              Aplicar
+            </button>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {items.map((it, i) => (
               <div key={i} className="relative rounded-xl overflow-hidden border border-white/10 bg-black/40">
@@ -244,11 +265,16 @@ function Uploader({ onDone, artists, lockedArtist }) {
                 </button>
                 <input
                   value={it.title}
-                  onChange={(e) =>
-                    setItems((prev) => prev.map((p, idx) => (idx === i ? { ...p, title: e.target.value } : p)))
-                  }
+                  onChange={(e) => patchItem(i, { title: e.target.value })}
                   placeholder="título (opcional)"
                   className="w-full bg-black/70 text-[11px] text-white px-2 py-1.5 border-t border-white/10 focus:outline-none"
+                />
+                <input
+                  list="admin-styles"
+                  value={it.style}
+                  onChange={(e) => patchItem(i, { style: e.target.value })}
+                  placeholder="estilo"
+                  className="w-full bg-black/70 text-[11px] text-[#ff7700] font-mono px-2 py-1.5 border-t border-white/10 focus:outline-none"
                 />
               </div>
             ))}
@@ -276,12 +302,24 @@ function Uploader({ onDone, artists, lockedArtist }) {
 
 function PieceRow({ piece, onChange, onDelete }) {
   const [busy, setBusy] = useState(false);
+  const [style, setStyle] = useState(piece.style || '');
 
   const toggle = async (patch) => {
     setBusy(true);
     try {
       const updated = await updatePiece(piece.id, patch);
       onChange(updated);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const saveStyle = async () => {
+    const v = style.trim();
+    if (v === (piece.style || '')) return;
+    setBusy(true);
+    try {
+      onChange(await updatePiece(piece.id, { style: v || null }));
     } finally {
       setBusy(false);
     }
@@ -304,9 +342,17 @@ function PieceRow({ piece, onChange, onDelete }) {
       </div>
       <div className="p-3 space-y-1.5 flex-1 flex flex-col">
         <p className="text-xs font-bold text-white line-clamp-1">{piece.title || '—'}</p>
-        <p className="text-[11px] text-slate-400 font-mono line-clamp-1">
-          {piece.artist || '—'} · {piece.style || '—'}
-        </p>
+        <p className="text-[11px] text-slate-400 font-mono line-clamp-1">{piece.artist || '—'}</p>
+        <input
+          list="admin-styles"
+          value={style}
+          onChange={(e) => setStyle(e.target.value)}
+          onBlur={saveStyle}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+          disabled={busy}
+          placeholder="estilo"
+          className="w-full bg-black/40 text-[11px] text-[#ff7700] font-mono px-2 py-1 rounded-md border border-white/10 focus:border-[#ff5500]/50 focus:outline-none disabled:opacity-50"
+        />
         <div className="flex items-center gap-1.5 pt-1 mt-auto">
           <button
             onClick={() => toggle({ status: piece.status === 'published' ? 'draft' : 'published' })}
@@ -361,6 +407,7 @@ function GalleryManager({ artists, lockedArtist }) {
 
   return (
     <div className="space-y-8">
+      <StylesDatalist />
       <Uploader onDone={refresh} artists={artists} lockedArtist={lockedArtist} />
 
       <section className="space-y-4">
