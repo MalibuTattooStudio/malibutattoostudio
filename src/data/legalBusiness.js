@@ -11,7 +11,7 @@ export const BUSINESS = {
   legalName: 'Nombre y apellidos o razón social — completar',
   taxId: 'NIF/CIF — completar',
   address: 'Domicilio fiscal completo (calle, número, CP, municipio) — completar',
-  email: 'Email de contacto legal — completar',
+  email: 'malibuinktattoo@gmail.com',
   phone: 'Teléfono de contacto — completar',
   registry: 'Datos de inscripción registral si aplica (Registro Mercantil, tomo/folio/hoja) — dejar en blanco si eres autónomo/a',
 };

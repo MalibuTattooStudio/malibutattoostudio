@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Truck, CheckCircle2, Send, Sparkles, UserCheck, Heart, ShieldCheck } from 'lucide-react';
 
-// Placeholder credentials for future replacement
+// WhatsApp numbers are still placeholders — pending real ones
 const CONTACT_CONFIG = {
   generalWhatsapp: '+34600000000',
   truckWhatsapp: '+34600000000',
-  generalEmail: 'info@malibutattoostudio.com',
-  truckEmail: 'truck@malibutattoostudio.com'
+  generalEmail: 'malibuinktattoo@gmail.com',
+  truckEmail: 'malibuinktattoo@gmail.com'
 };
 
 export default function BookingModal({ isOpen, onClose, initialLocation = 'santacruz', language }) {

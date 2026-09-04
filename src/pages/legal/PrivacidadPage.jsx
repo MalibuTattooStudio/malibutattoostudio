@@ -14,7 +14,7 @@ export default function PrivacidadPage() {
           <li>Responsable: <Ph>{BUSINESS.legalName}</Ph></li>
           <li>NIF / CIF: <Ph>{BUSINESS.taxId}</Ph></li>
           <li>Domicilio: <Ph>{BUSINESS.address}</Ph></li>
-          <li>Contacto para temas de privacidad: <Ph>{BUSINESS.email}</Ph></li>
+          <li>Contacto para temas de privacidad: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></li>
         </ul>
       </section>
 
@@ -90,7 +90,8 @@ export default function PrivacidadPage() {
         <h2>6. Tus derechos</h2>
         <p>
           Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del
-          tratamiento y portabilidad escribiendo a <Ph>{BUSINESS.email}</Ph>. También tienes derecho a
+          tratamiento y portabilidad escribiendo a{' '}
+          <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. También tienes derecho a
           presentar una reclamación ante la Agencia Española de Protección de Datos (
           <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">www.aepd.es</a>) si
           consideras que el tratamiento de tus datos no se ajusta a la normativa.

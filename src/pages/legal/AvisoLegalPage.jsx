@@ -18,7 +18,7 @@ export default function AvisoLegalPage() {
           <li>Nombre / Razón social: <Ph>{BUSINESS.legalName}</Ph></li>
           <li>NIF / CIF: <Ph>{BUSINESS.taxId}</Ph></li>
           <li>Domicilio: <Ph>{BUSINESS.address}</Ph></li>
-          <li>Email de contacto: <Ph>{BUSINESS.email}</Ph></li>
+          <li>Email de contacto: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a></li>
           <li>Teléfono: <Ph>{BUSINESS.phone}</Ph></li>
           <li>Datos registrales: <Ph>{BUSINESS.registry}</Ph></li>
         </ul>

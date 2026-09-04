@@ -10,7 +10,7 @@ import StudiosSection from './components/StudiosSection';
 import GallerySection from './components/GallerySection';
 import ArtistSection from './components/ArtistSection';
 import ReviewsSection from './components/ReviewsSection';
-import SignalDivider from './components/SignalDivider';
+import SectionDivider from './components/SectionDivider';
 import BookingModal from './components/BookingModal';
 import Footer from './components/Footer';
 
@@ -78,7 +78,7 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
               language={language}
             />
 
-            <SignalDivider language={language} />
+            <SectionDivider />
           </main>
         } />
 
