@@ -1,4 +1,4 @@
-import React, { useState, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import CustomCursor from './components/CustomCursor';
 import TechOverlay from './components/TechOverlay';
@@ -148,6 +148,15 @@ function SiteShell() {
   const handleOpenBooking = useCallback((loc = 'santacruz') => {
     setBookingLocation(loc);
     setBookingOpen(true);
+  }, []);
+
+  // The native cursor is only ever hidden while CustomCursor is mounted to
+  // replace it (here, on the public site). /admin renders outside SiteShell
+  // and has no replacement — it must keep the real cursor, so this class
+  // lives on the component that needs it instead of statically in index.html.
+  useEffect(() => {
+    document.body.classList.add('cursor-none');
+    return () => document.body.classList.remove('cursor-none');
   }, []);
 
   return (
