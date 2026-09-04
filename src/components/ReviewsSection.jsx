@@ -59,15 +59,26 @@ export function ReviewCard({ review, accent, onOpen, setCursorHover, fluid = fal
 
 function MarqueeLane({ reviews, accent, reverse, onOpen, setCursorHover }) {
   if (reviews.length === 0) return null;
-  const doubled = [...reviews, ...reviews]; // duplicate for a seamless loop
+  const doubled = [...reviews, ...reviews]; // duplicate for a seamless loop (desktop only)
+
   return (
-    <div className="marquee-row overflow-hidden">
-      <div className={`marquee-track gap-4 ${reverse ? 'reverse' : ''}`}>
-        {doubled.map((r, i) => (
-          <ReviewCard key={`${r.id}-${i}`} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
+    <>
+      {/* mobile: real finger-swipe — no auto-scroll fighting the touch, no duplicates to drag past */}
+      <div className="sm:hidden -mx-4 px-4 flex gap-4 overflow-x-auto scrollbar-none pb-1">
+        {reviews.map((r) => (
+          <ReviewCard key={r.id} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
         ))}
       </div>
-    </div>
+
+      {/* desktop: auto-scrolling ticker, pauses on hover */}
+      <div className="hidden sm:block marquee-row overflow-hidden">
+        <div className={`marquee-track gap-4 ${reverse ? 'reverse' : ''}`}>
+          {doubled.map((r, i) => (
+            <ReviewCard key={`${r.id}-${i}`} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
