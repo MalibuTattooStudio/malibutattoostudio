@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Compass, ExternalLink, CheckCircle2, Sparkles, Layers, Camera, UserCheck, Star } from 'lucide-react';
+import { MapPin, Compass, ExternalLink, CheckCircle2, Sparkles, Layers, Camera, UserCheck, Star, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useArtists } from '../hooks/useArtists';
 
 export default function StudiosPage({ onOpenBooking, setCursorHover, language }) {
   const isEs = language === 'es';
   const [filterMode, setFilterMode] = useState('all'); // 'all', 'santacruz', 'tabaiba'
 
-  // Exact real artists list as specified by user with profile slugs
-  const tabaibaArtists = [
-    { name: 'Yenko Tattoo', slug: 'yenko', handle: '@yenko_freestyletatau', url: 'https://www.instagram.com/yenko_freestyletatau/', image: '/assets/artist_yenko.jpg', initial: 'Y' },
-    { name: 'Iria Tattoo', slug: 'iria', handle: '@iria_tattoo', url: 'https://www.instagram.com/iria_tattoo/', image: '/assets/artist_iria.jpg', initial: 'I' },
-    { name: 'Yax Tattoo', slug: 'yaxtattoo', handle: '@yaxtattoo', url: 'https://www.instagram.com/yaxtattoo/', image: '/assets/artist_yax.jpg', initial: 'Y' },
-    { name: 'Aurea Tattoo', slug: 'aurea', handle: '@aurea.tattoo_', url: 'https://www.instagram.com/aurea.tattoo_/', image: '/assets/artist_aurea.jpg', initial: 'A' }
-  ];
-
-  const santaCruzArtists = [
-    { name: 'Aditii Tattoo', slug: 'aditii', handle: '@aditii_tattoo', url: 'https://www.instagram.com/aditii_tattoo/', image: '/assets/artist_aditii.jpg', initial: 'A' },
-    { name: 'Pidol BodyArt', slug: 'pidol', handle: '@pidol_bodyart', url: 'https://www.instagram.com/pidol_bodyart/', image: '/assets/artist_pidol.jpg', initial: 'P' },
-    { name: 'Kari Torres', slug: 'karitorres', handle: '@karitorres.tattoo', url: 'https://www.instagram.com/karitorres.tattoo/', image: '/assets/artist_karitorres.jpg', initial: 'K' },
-    { name: 'Honnari Tattoo', slug: 'honnari', handle: '@honnari_tattoo', url: 'https://www.instagram.com/honnari_tattoo/', image: '/assets/artist_honnari.jpg', initial: 'H' },
-    { name: 'EriOS Tattoo', slug: 'erios', handle: '@eriostattoo', url: 'https://www.instagram.com/eriostattoo/', image: '/assets/artist_erios.jpg', initial: 'E' }
-  ];
+  // Resident rosters come from the `artists` table, split by their studio.
+  const { artists, loading: artistsLoading } = useArtists();
+  const tabaibaArtists = artists.filter((a) => a.studio === 'tabaiba');
+  const santaCruzArtists = artists.filter((a) => a.studio === 'santacruz');
 
   const studiosData = [
     {
@@ -267,9 +257,12 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                     </div>
 
                     <div className="flex flex-wrap items-center justify-center sm:justify-between gap-7 sm:gap-8 pt-2">
-                      {studio.artists.map((artist, aIdx) => (
+                      {artistsLoading && studio.artists.length === 0 && (
+                        <Loader2 className="w-5 h-5 text-[#ff5500] animate-spin mx-auto" />
+                      )}
+                      {studio.artists.map((artist) => (
                         <Link
-                          key={aIdx}
+                          key={artist.slug}
                           to={`/artista/${artist.slug}`}
                           onMouseEnter={() => setCursorHover(true, 'VER FICHA', artist)}
                           onMouseLeave={() => setCursorHover(false)}
@@ -316,7 +309,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                                 <div className="w-full h-full rounded-full bg-gradient-to-br from-zinc-800 to-black flex items-center justify-center flex-col text-zinc-400 group-hover:text-white transition-colors">
                                   <Camera className="w-5 h-5 text-pink-400 mb-0.5 group-hover:scale-110 transition-transform" />
                                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-500 group-hover:text-white">
-                                    {artist.initial}
+                                    {artist.name.charAt(0)}
                                   </span>
                                 </div>
                               )}
@@ -332,7 +325,7 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                               {artist.name}
                             </span>
                             <span className="text-[10px] text-pink-400 font-mono leading-tight mt-0.5">
-                              {artist.handle}
+                              @{artist.handle}
                             </span>
                           </div>
                         </Link>

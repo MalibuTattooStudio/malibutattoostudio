@@ -126,12 +126,15 @@ export async function uploadPiece({ file, artistName, artistSlug, style, title, 
   return ins.data;
 }
 
-/** All pieces incl. drafts, newest first — for the admin table. */
-export async function listAllPieces() {
+/**
+ * All pieces incl. drafts, newest first — for the admin table.
+ * Pass `artistSlug` to scope the list to one artist (used by the per-artist panel).
+ */
+export async function listAllPieces({ artistSlug } = {}) {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('gallery_items')
-    .select('*')
+  let q = supabase.from('gallery_items').select('*');
+  if (artistSlug) q = q.eq('artist_slug', artistSlug);
+  const { data, error } = await q
     .order('featured', { ascending: false })
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false });
@@ -187,10 +190,7 @@ export async function signOut() {
   if (supabase) await supabase.auth.signOut();
 }
 
-/* --------------------------------------------------------------- artists -- */
-
-// canonical list lives in src/data/artists.js
-export { ARTISTS } from '../data/artists';
+/* ---------------------------------------------------------------- styles -- */
 
 export const STYLES = [
   'Blackwork',
