@@ -196,9 +196,6 @@ export default function ReviewsSection({ setCursorHover, language }) {
   const sc = stats.santacruz;
   const tb = stats.tabaiba;
   const combinedCount = (sc?.count || 0) + (tb?.count || 0);
-  const combinedRating = combinedCount
-    ? ((sc?.rating || 0) * (sc?.count || 0) + (tb?.rating || 0) * (tb?.count || 0)) / combinedCount
-    : 0;
 
   // nothing curated yet in /admin — stay invisible rather than show an empty shell
   if (!scLoading && !tbLoading && scReviews.length === 0 && tbReviews.length === 0) return null;
@@ -219,10 +216,12 @@ export default function ReviewsSection({ setCursorHover, language }) {
           </h2>
 
           {combinedCount > 0 && (
-            <span className="inline-flex items-center gap-1.5 text-2xl sm:text-3xl font-black text-white font-heading pt-2">
-              {combinedRating.toFixed(1)}
+            <span className="inline-flex items-center gap-2 pt-2">
+              <span className="text-2xl sm:text-3xl font-black text-white font-heading uppercase tracking-tight">
+                {isEs ? 'Excelente' : 'Excellent'}
+              </span>
               <Star className="w-5 h-5 sm:w-6 sm:h-6 text-[#ff5500]" fill="#ff5500" />
-              <span className="text-sm text-slate-400 font-mono font-normal ml-1">
+              <span className="text-sm text-slate-400 font-mono font-normal">
                 · {combinedCount} {isEs ? 'reseñas en Google' : 'Google reviews'}
               </span>
             </span>
