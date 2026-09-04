@@ -13,10 +13,21 @@ export default function SignalDivider({ language }) {
   const isEs = language === 'es';
 
   return (
-    <section
-      className="relative py-4 sm:py-8 overflow-hidden select-none bg-[#070709]/80 backdrop-blur-sm"
-      aria-hidden="true"
-    >
+    <section className="relative py-4 sm:py-8 overflow-hidden select-none" aria-hidden="true">
+      {/* backing panel: solid where the convergence point needs to read
+          clearly, fading to fully transparent at the edges so the WebGL
+          mesh shows through there instead of a hard rectangular band */}
+      <div
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(7,7,9,0.85) 22%, rgba(7,7,9,0.85) 78%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%)',
+          maskImage:
+            'linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%)',
+        }}
+      />
       <svg
         viewBox="0 0 1200 220"
         preserveAspectRatio="xMidYMid meet"

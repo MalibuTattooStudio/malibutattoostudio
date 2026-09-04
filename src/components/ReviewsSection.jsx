@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Star, X, ArrowUpRight, MessageSquareQuote } from 'lucide-react';
 import GoogleIcon from './icons/GoogleIcon';
@@ -57,28 +57,118 @@ export function ReviewCard({ review, accent, onOpen, setCursorHover, fluid = fal
   );
 }
 
+/**
+ * One lane: auto-advances on its own (rAF, not CSS — so it can share the
+ * exact same scroll position with real user input) and is fully
+ * draggable/swipeable at the same time. Touch gets native scroll physics
+ * for free; mouse gets a hand-rolled click-and-drag. Either kind of
+ * interaction pauses the auto-advance and resumes it after a short pause,
+ * long enough to actually read the card you stopped on.
+ */
 function MarqueeLane({ reviews, accent, reverse, onOpen, setCursorHover }) {
+  const trackRef = useRef(null);
+  const stateRef = useRef({ interacting: false, dragging: false, startX: 0, startScroll: 0, moved: false, resumeTimer: null });
+
+  const doubled = useMemo(() => [...reviews, ...reviews], [reviews]); // duplicated for a seamless loop
+
+  useEffect(() => {
+    const el = trackRef.current;
+    const state = stateRef.current;
+    if (!el || reviews.length === 0) return undefined;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dir = reverse ? -1 : 1;
+    const speed = reverse ? 95 : 115; // px/sec
+
+    const half = el.scrollWidth / 2;
+    if (reverse && half > 0) el.scrollLeft = half; // give the reverse lane room to count down
+
+    const onScroll = () => {
+      const h = el.scrollWidth / 2;
+      if (h <= 0) return;
+      if (el.scrollLeft >= h) el.scrollLeft -= h;
+      else if (el.scrollLeft <= 0) el.scrollLeft += h;
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    let raf;
+    let lastTs = null;
+    const tick = (ts) => {
+      if (lastTs == null) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      if (!reduceMotion && !state.interacting) {
+        el.scrollLeft += dir * speed * dt;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('scroll', onScroll);
+      clearTimeout(state.resumeTimer);
+    };
+  }, [reverse, reviews.length]);
+
   if (reviews.length === 0) return null;
-  const doubled = [...reviews, ...reviews]; // duplicate for a seamless loop (desktop only)
+
+  const beginInteraction = () => {
+    stateRef.current.interacting = true;
+    clearTimeout(stateRef.current.resumeTimer);
+  };
+  const endInteraction = () => {
+    clearTimeout(stateRef.current.resumeTimer);
+    stateRef.current.resumeTimer = setTimeout(() => {
+      stateRef.current.interacting = false;
+    }, 1600);
+  };
+
+  const onPointerDown = (e) => {
+    beginInteraction();
+    stateRef.current.moved = false;
+    stateRef.current.startX = e.clientX;
+    stateRef.current.startScroll = trackRef.current.scrollLeft;
+    if (e.pointerType === 'mouse') {
+      stateRef.current.dragging = true;
+      trackRef.current.setPointerCapture(e.pointerId);
+    }
+  };
+  const onPointerMove = (e) => {
+    if (!stateRef.current.dragging) return;
+    const dx = e.clientX - stateRef.current.startX;
+    if (Math.abs(dx) > 4) stateRef.current.moved = true;
+    trackRef.current.scrollLeft = stateRef.current.startScroll - dx;
+  };
+  const onPointerUp = () => {
+    stateRef.current.dragging = false;
+    endInteraction();
+  };
+  const onClickCapture = (e) => {
+    if (stateRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      stateRef.current.moved = false;
+    }
+  };
 
   return (
-    <>
-      {/* mobile: real finger-swipe — no auto-scroll fighting the touch, no duplicates to drag past */}
-      <div className="sm:hidden -mx-4 px-4 flex gap-4 overflow-x-auto scrollbar-none pb-1">
-        {reviews.map((r) => (
-          <ReviewCard key={r.id} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
-        ))}
-      </div>
-
-      {/* desktop: auto-scrolling ticker, pauses on hover */}
-      <div className="hidden sm:block marquee-row overflow-hidden">
-        <div className={`marquee-track gap-4 ${reverse ? 'reverse' : ''}`}>
-          {doubled.map((r, i) => (
-            <ReviewCard key={`${r.id}-${i}`} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
-          ))}
-        </div>
-      </div>
-    </>
+    <div
+      ref={trackRef}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onMouseEnter={beginInteraction}
+      onMouseLeave={endInteraction}
+      onClickCapture={onClickCapture}
+      className="flex gap-4 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing"
+      style={{ touchAction: 'pan-x' }}
+    >
+      {doubled.map((r, i) => (
+        <ReviewCard key={`${r.id}-${i}`} review={r} accent={accent} onOpen={onOpen} setCursorHover={setCursorHover} />
+      ))}
+    </div>
   );
 }
 
