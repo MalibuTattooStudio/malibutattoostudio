@@ -18,10 +18,18 @@ import {
   deleteArtist,
   uploadPortrait,
 } from '../lib/adminArtists';
+import {
+  listReviews,
+  createReview,
+  updateReview,
+  deleteReview,
+  listStudioStats,
+  updateStudioStats,
+} from '../lib/adminReviews';
 import { STUDIO_META } from '../data/studios';
 import {
   Upload, X, Star, Eye, EyeOff, Trash2, LogOut, Loader2, ImagePlus,
-  Images, Users, Plus, ArrowLeft, Save,
+  Images, Users, Plus, ArrowLeft, Save, MessageSquareQuote,
 } from 'lucide-react';
 
 const STUDIO_KEYS = Object.keys(STUDIO_META); // ['santacruz', 'tabaiba']
@@ -758,10 +766,293 @@ function ArtistsManager() {
   );
 }
 
+/* ------------------------------------------------------------- reviews -- */
+
+function StatRow({ row, busy, onSave }) {
+  const [rating, setRating] = useState(row.google_rating);
+  const [count, setCount] = useState(row.google_count);
+  const [url, setUrl] = useState(row.google_url || '');
+
+  const dirty =
+    Number(rating) !== row.google_rating ||
+    Number(count) !== row.google_count ||
+    url !== (row.google_url || '');
+
+  return (
+    <div className="bg-[#0f0f14] rounded-2xl border border-white/10 p-4 space-y-3">
+      <p className="text-xs font-extrabold uppercase tracking-widest text-white font-mono">
+        {STUDIO_META[row.studio]?.label || row.studio}
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Nota">
+          <input type="number" step="0.1" min="1" max="5" value={rating} onChange={(e) => setRating(e.target.value)} className={inputCls} />
+        </Field>
+        <Field label="Total reseñas">
+          <input type="number" min="0" value={count} onChange={(e) => setCount(e.target.value)} className={inputCls} />
+        </Field>
+      </div>
+      <Field label="Enlace de Google Maps">
+        <input value={url} onChange={(e) => setUrl(e.target.value)} className={inputCls} />
+      </Field>
+      <button
+        onClick={() => onSave({ google_rating: Number(rating), google_count: Number(count), google_url: url })}
+        disabled={busy || !dirty}
+        className="px-4 py-2 rounded-full bg-[#ff5500] text-black font-extrabold text-[11px] uppercase tracking-widest hover:bg-[#ff7700] transition-colors disabled:opacity-40 flex items-center gap-2"
+      >
+        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+        Guardar
+      </button>
+    </div>
+  );
+}
+
+function StudioStatsPanel() {
+  const [rows, setRows] = useState(null);
+  const [busy, setBusy] = useState('');
+
+  const refresh = async () => {
+    try {
+      setRows(await listStudioStats());
+    } catch {
+      setRows([]);
+    }
+  };
+
+  useEffect(() => { refresh(); }, []);
+
+  const save = async (studio, patch) => {
+    setBusy(studio);
+    try {
+      const updated = await updateStudioStats(studio, patch);
+      setRows((prev) => prev.map((r) => (r.studio === studio ? updated : r)));
+    } finally {
+      setBusy('');
+    }
+  };
+
+  if (!rows) return null;
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {rows.map((r) => (
+        <StatRow key={r.studio} row={r} busy={busy === r.studio} onSave={(patch) => save(r.studio, patch)} />
+      ))}
+    </div>
+  );
+}
+
+function ReviewForm({ review, onSaved, onBack, onDeleted }) {
+  const isNew = !review.id;
+  const [form, setForm] = useState({
+    studio: review.studio || 'santacruz',
+    author_name: review.author_name || '',
+    rating: review.rating || 5,
+    body: review.body || '',
+    review_date: review.review_date || '',
+    lang: review.lang || 'es',
+    google_url: review.google_url || '',
+    on_landing: !!review.on_landing,
+    status: review.status || 'published',
+  });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const set = (k) => (e) =>
+    setForm((f) => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  const save = async () => {
+    setBusy(true);
+    setErr('');
+    try {
+      const payload = { ...form, rating: Number(form.rating), review_date: form.review_date || null };
+      const saved = isNew ? await createReview(payload) : await updateReview(review.id, payload);
+      onSaved(saved);
+    } catch (e) {
+      setErr(e.message || 'No se pudo guardar');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="bg-[#0f0f14] rounded-3xl border border-white/10 p-5 sm:p-7 space-y-5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300">
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <h3 className="text-sm font-black uppercase text-white font-heading tracking-wide">
+            {isNew ? 'Nueva reseña' : (form.author_name || 'Reseña')}
+          </h3>
+        </div>
+        {!isNew && onDeleted && (
+          <button
+            onClick={() => { if (confirm('¿Borrar esta reseña?')) onDeleted(review); }}
+            className="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400"
+            title="Borrar reseña"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Field label="Autor"><input value={form.author_name} onChange={set('author_name')} className={inputCls} /></Field>
+        <Field label="Estudio">
+          <select value={form.studio} onChange={set('studio')} className={inputCls}>
+            {STUDIO_KEYS.map((k) => <option key={k} value={k}>{STUDIO_META[k].label}</option>)}
+          </select>
+        </Field>
+        <Field label="Estrellas">
+          <select value={form.rating} onChange={set('rating')} className={inputCls}>
+            {[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+        </Field>
+        <Field label="Fecha">
+          <input type="date" value={form.review_date || ''} onChange={set('review_date')} className={inputCls} />
+        </Field>
+        <Field label="Idioma">
+          <select value={form.lang} onChange={set('lang')} className={inputCls}>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </Field>
+        <Field label="Visibilidad">
+          <select value={form.status} onChange={set('status')} className={inputCls}>
+            <option value="published">Publicada</option>
+            <option value="draft">Oculta</option>
+          </select>
+        </Field>
+      </div>
+
+      <Field label="Texto de la reseña">
+        <textarea rows={4} value={form.body} onChange={set('body')} className={inputCls} />
+      </Field>
+      <Field label="Enlace a la reseña en Google (opcional)">
+        <input value={form.google_url} onChange={set('google_url')} placeholder="https://…" className={inputCls} />
+      </Field>
+
+      <label className="flex items-center gap-2.5 text-xs text-slate-300 font-mono cursor-pointer">
+        <input type="checkbox" checked={form.on_landing} onChange={set('on_landing')} className="w-4 h-4 accent-[#ff5500]" />
+        Mostrar en el muro de la portada
+      </label>
+
+      {err && <p className="text-xs text-red-400 font-mono">{err}</p>}
+
+      <button
+        onClick={save}
+        disabled={busy}
+        className="px-6 py-3 rounded-full bg-[#ff5500] text-black font-extrabold text-xs uppercase tracking-widest hover:bg-[#ff7700] transition-colors disabled:opacity-60 flex items-center gap-2"
+      >
+        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+        Guardar
+      </button>
+    </div>
+  );
+}
+
+function ReviewsManager() {
+  const [reviews, setReviews] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [filter, setFilter] = useState('all');
+
+  const refresh = async () => {
+    try {
+      setReviews(await listReviews());
+    } catch {
+      setReviews([]);
+    }
+  };
+
+  useEffect(() => { refresh(); }, []);
+
+  if (reviews === null) {
+    return <div className="py-10 text-center"><Loader2 className="w-5 h-5 text-[#ff5500] animate-spin mx-auto" /></div>;
+  }
+
+  if (editing) {
+    return (
+      <ReviewForm
+        review={editing}
+        onBack={() => setEditing(null)}
+        onSaved={(u) => {
+          setReviews((prev) => (prev.some((r) => r.id === u.id) ? prev.map((r) => (r.id === u.id ? u : r)) : [u, ...prev]));
+          setEditing(null);
+        }}
+        onDeleted={async (r) => {
+          await deleteReview(r.id);
+          setReviews((prev) => prev.filter((x) => x.id !== r.id));
+          setEditing(null);
+        }}
+      />
+    );
+  }
+
+  const filtered = filter === 'all' ? reviews : reviews.filter((r) => r.studio === filter);
+  const onLandingCount = reviews.filter((r) => r.on_landing).length;
+
+  return (
+    <div className="space-y-6">
+      <StudioStatsPanel />
+
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-2">
+          {['all', ...STUDIO_KEYS].map((k) => (
+            <button
+              key={k}
+              onClick={() => setFilter(k)}
+              className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                filter === k ? 'bg-[#ff5500] text-black' : 'bg-white/5 text-slate-400 hover:text-white'
+              }`}
+            >
+              {k === 'all' ? 'Todas' : STUDIO_META[k].label}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => setEditing({ studio: filter === 'all' ? 'santacruz' : filter })}
+          className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4 text-[#ff5500]" /> Nueva reseña
+        </button>
+      </div>
+
+      <p className="text-[11px] font-mono text-slate-500">
+        {reviews.length} reseñas · {onLandingCount} en el muro de portada
+      </p>
+
+      <div className="space-y-2">
+        {filtered.map((r) => (
+          <button
+            key={r.id}
+            onClick={() => setEditing(r)}
+            className="w-full text-left bg-[#0f0f14] border border-white/10 hover:border-[#ff5500]/50 rounded-xl px-4 py-3 flex items-center gap-3 transition-colors"
+          >
+            <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[11px] font-heading font-black text-slate-300 shrink-0">
+              {(r.author_name || '?').charAt(0).toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-white truncate">{r.author_name}</p>
+              <p className="text-[11px] text-slate-500 font-mono truncate">{r.body}</p>
+            </div>
+            <span className="text-[10px] font-mono text-slate-500 shrink-0 hidden sm:inline">{STUDIO_META[r.studio]?.label}</span>
+            {r.on_landing && <Star className="w-3.5 h-3.5 text-[#ff5500] shrink-0" fill="currentColor" aria-label="En el muro de portada" />}
+            {r.status !== 'published' && <EyeOff className="w-3.5 h-3.5 text-slate-500 shrink-0" />}
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p className="text-sm text-slate-500 py-6">Sin reseñas aquí todavía.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------- admin console -- */
 
 function AdminConsole() {
-  const [view, setView] = useState('gallery'); // 'gallery' | 'artists'
+  const [view, setView] = useState('gallery'); // 'gallery' | 'artists' | 'reviews'
   const [artistOptions, setArtistOptions] = useState([]);
 
   useEffect(() => {
@@ -792,15 +1083,16 @@ function AdminConsole() {
           <div className="flex items-center gap-1 bg-[#0f0f14] rounded-full border border-white/10 p-1">
             <Tab id="gallery" icon={Images} label="Galería" />
             <Tab id="artists" icon={Users} label="Artistas" />
+            <Tab id="reviews" icon={MessageSquareQuote} label="Reseñas" />
           </div>
           <button onClick={signOut} className="flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors">
             <LogOut className="w-4 h-4" /> Salir
           </button>
         </header>
 
-        {view === 'gallery'
-          ? <GalleryManager artists={artistOptions} />
-          : <ArtistsManager />}
+        {view === 'gallery' && <GalleryManager artists={artistOptions} />}
+        {view === 'artists' && <ArtistsManager />}
+        {view === 'reviews' && <ReviewsManager />}
       </div>
     </div>
   );

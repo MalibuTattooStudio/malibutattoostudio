@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Compass, ExternalLink, CheckCircle2, Sparkles, Layers, Camera, UserCheck, Star, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useArtists } from '../hooks/useArtists';
+import StudioReviews from '../components/StudioReviews';
 
 export default function StudiosPage({ onOpenBooking, setCursorHover, language }) {
   const isEs = language === 'es';
@@ -332,6 +333,13 @@ export default function StudiosPage({ onOpenBooking, setCursorHover, language })
                       ))}
                     </div>
                   </div>
+
+                  <StudioReviews
+                    studio={studio.id}
+                    accent={studio.primaryColor}
+                    setCursorHover={setCursorHover}
+                    language={language}
+                  />
 
                 </motion.div>
               );

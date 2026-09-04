@@ -9,6 +9,7 @@ import TattooTruckSection from './components/TattooTruckSection';
 import StudiosSection from './components/StudiosSection';
 import GallerySection from './components/GallerySection';
 import ArtistSection from './components/ArtistSection';
+import ReviewsSection from './components/ReviewsSection';
 import BookingModal from './components/BookingModal';
 import Footer from './components/Footer';
 
@@ -59,6 +60,11 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
             />
 
             <ArtistSection
+              setCursorHover={setCursorHover}
+              language={language}
+            />
+
+            <ReviewsSection
               setCursorHover={setCursorHover}
               language={language}
             />
