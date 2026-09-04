@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Truck, CheckCircle2, Send, Sparkles, UserCheck, Heart, ShieldCheck } from 'lucide-react';
 
@@ -360,6 +361,18 @@ export default function BookingModal({ isOpen, onClose, initialLocation = 'santa
                     Confirmar Pre-Reserva en Estudio
                   </button>
 
+                  <p className="flex items-start gap-1.5 text-[10px] text-slate-500 leading-relaxed">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-600" />
+                    <span>
+                      Tus datos solo se usan para preparar tu mensaje de WhatsApp — no se guardan en
+                      nuestros servidores.{' '}
+                      <Link to="/privacidad" onClick={onClose} className="underline hover:text-slate-300">
+                        Política de privacidad
+                      </Link>
+                      .
+                    </span>
+                  </p>
+
                 </form>
               )}
 
@@ -516,6 +529,18 @@ export default function BookingModal({ isOpen, onClose, initialLocation = 'santa
                   >
                     Solicitar Presupuesto TattooTruck
                   </button>
+
+                  <p className="flex items-start gap-1.5 text-[10px] text-slate-500 leading-relaxed">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-600" />
+                    <span>
+                      Tus datos solo se usan para preparar tu mensaje de WhatsApp — no se guardan en
+                      nuestros servidores.{' '}
+                      <Link to="/privacidad" onClick={onClose} className="underline hover:text-slate-300">
+                        Política de privacidad
+                      </Link>
+                      .
+                    </span>
+                  </p>
 
                 </form>
               )}

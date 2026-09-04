@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { MapPin, Truck, Heart, ExternalLink } from 'lucide-react';
 import InstagramIcon from './icons/InstagramIcon';
 
@@ -139,7 +140,9 @@ export default function Footer({ onOpenBooking, language }) {
           </p>
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2 text-[11px] shrink-0">
             <a href="https://www.instagram.com/malibutattoostudio/" target="_blank" rel="noopener noreferrer" className="hover:text-slate-200 transition-colors">Instagram</a>
-            <a href="#" className="hover:text-slate-200 transition-colors">Aviso Legal</a>
+            <Link to="/aviso-legal" className="hover:text-slate-200 transition-colors">Aviso Legal</Link>
+            <Link to="/privacidad" className="hover:text-slate-200 transition-colors">Privacidad</Link>
+            <Link to="/cookies" className="hover:text-slate-200 transition-colors">Cookies</Link>
             <a href="#" className="hover:text-slate-200 transition-colors">Sanidad Homologada</a>
           </div>
         </div>

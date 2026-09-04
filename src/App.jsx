@@ -20,6 +20,9 @@ import StudiosPage from './pages/StudiosPage';
 import GalleryPage from './pages/GalleryPage';
 import ArtistsPage from './pages/ArtistsPage';
 import ArtistProfilePage from './pages/ArtistProfilePage';
+import AvisoLegalPage from './pages/legal/AvisoLegalPage';
+import PrivacidadPage from './pages/legal/PrivacidadPage';
+import CookiesPage from './pages/legal/CookiesPage';
 
 // Internal gallery manager — lazy so it never touches the public bundle path
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -123,6 +126,11 @@ function AnimatedAppRoutes({ handleOpenBooking, setCursorHover, language }) {
             language={language}
           />
         } />
+
+        {/* Legal pages */}
+        <Route path="/aviso-legal" element={<AvisoLegalPage />} />
+        <Route path="/privacidad" element={<PrivacidadPage />} />
+        <Route path="/cookies" element={<CookiesPage />} />
       </Routes>
     </PageTransition>
   );
