@@ -13,7 +13,10 @@ export default function SignalDivider({ language }) {
   const isEs = language === 'es';
 
   return (
-    <div className="relative py-4 sm:py-8 overflow-hidden select-none" aria-hidden="true">
+    <section
+      className="relative py-4 sm:py-8 overflow-hidden select-none bg-[#070709]/80 backdrop-blur-sm"
+      aria-hidden="true"
+    >
       <svg
         viewBox="0 0 1200 220"
         preserveAspectRatio="xMidYMid meet"
@@ -22,11 +25,11 @@ export default function SignalDivider({ language }) {
         <defs>
           <linearGradient id="wireLeft" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#ff5500" stopOpacity="0" />
-            <stop offset="100%" stopColor="#ff5500" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#ff5500" stopOpacity="0.8" />
           </linearGradient>
           <linearGradient id="wireRight" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#00f0ff" stopOpacity="0" />
-            <stop offset="100%" stopColor="#00f0ff" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#00f0ff" stopOpacity="0.8" />
           </linearGradient>
           <radialGradient id="convergeGlow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#fff2e0" stopOpacity="0.9" />
@@ -53,14 +56,14 @@ export default function SignalDivider({ language }) {
         </g>
 
         {/* the two wires */}
-        <path id="wireL" d="M 0 26 C 300 26, 470 150, 600 168" fill="none" stroke="url(#wireLeft)" strokeWidth="1.5" />
-        <path id="wireR" d="M 1200 26 C 900 26, 730 150, 600 168" fill="none" stroke="url(#wireRight)" strokeWidth="1.5" />
+        <path id="wireL" d="M 0 26 C 300 26, 470 150, 600 168" fill="none" stroke="url(#wireLeft)" strokeWidth="2" />
+        <path id="wireR" d="M 1200 26 C 900 26, 730 150, 600 168" fill="none" stroke="url(#wireRight)" strokeWidth="2" />
 
         {/* relay nodes along each wire */}
-        <circle cx="180" cy="30" r="2.5" fill="#ff5500" opacity="0.6" />
-        <circle cx="380" cy="70" r="2.5" fill="#ff5500" opacity="0.6" />
-        <circle cx="1020" cy="30" r="2.5" fill="#00f0ff" opacity="0.6" />
-        <circle cx="820" cy="70" r="2.5" fill="#00f0ff" opacity="0.6" />
+        <circle cx="180" cy="30" r="3" fill="#ff5500" opacity="0.85" />
+        <circle cx="380" cy="70" r="3" fill="#ff5500" opacity="0.85" />
+        <circle cx="1020" cy="30" r="3" fill="#00f0ff" opacity="0.85" />
+        <circle cx="820" cy="70" r="3" fill="#00f0ff" opacity="0.85" />
 
         {/* convergence glow + core */}
         <circle cx="600" cy="168" r="42" fill="url(#convergeGlow)" filter="url(#softBlur)" className="signal-glow" />
@@ -96,6 +99,6 @@ export default function SignalDivider({ language }) {
           {isEs ? 'Santa Cruz + Tabaiba Baja · una sola firma' : 'Santa Cruz + Tabaiba Baja · one signature'}
         </span>
       </div>
-    </div>
+    </section>
   );
 }
