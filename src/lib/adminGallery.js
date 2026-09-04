@@ -206,4 +206,5 @@ export const STYLES = [
   'Ilustrativo',
   'Chicano',
   'Freestyle',
+  'Piercing',
 ];
