@@ -71,6 +71,44 @@ function MarqueeLane({ reviews, accent, reverse, onOpen, setCursorHover }) {
   );
 }
 
+/** The real Google rating + count for one studio, shown right above its lane. */
+function LaneHeader({ studioKey, stats, isEs }) {
+  const s = stats[studioKey];
+  const accent = studioColor(studioKey);
+  if (!s) return null;
+
+  return (
+    <div className="flex items-center justify-between gap-3 px-1">
+      <div className="flex items-center gap-2.5">
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: accent }} />
+        <span className="text-xs font-extrabold uppercase tracking-widest text-white font-mono">
+          {studioMeta(studioKey).label}
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-lg sm:text-xl font-black text-white font-heading flex items-center gap-1">
+          {s.rating}
+          <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: accent }} fill={accent} />
+        </span>
+        <span className="text-[11px] font-mono text-slate-400">
+          · {s.count} {isEs ? 'en Google' : 'on Google'}
+        </span>
+        {s.url && (
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={isEs ? 'Ver en Google' : 'View on Google'}
+            className="ml-0.5 text-slate-500 hover:text-white transition-colors"
+          >
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ReviewModal({ review, onClose, language }) {
   const isEs = language === 'es';
   const { stats } = useStudioStats();
@@ -181,33 +219,23 @@ export default function ReviewsSection({ setCursorHover, language }) {
           </h2>
 
           {combinedCount > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-2">
-              <span className="text-2xl sm:text-3xl font-black text-white font-heading flex items-center gap-1.5">
-                {combinedRating.toFixed(1)}
-                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-[#ff5500]" fill="#ff5500" />
-                <span className="text-sm text-slate-400 font-mono font-normal ml-1">
-                  · {combinedCount} {isEs ? 'reseñas en Google' : 'Google reviews'}
-                </span>
+            <span className="inline-flex items-center gap-1.5 text-2xl sm:text-3xl font-black text-white font-heading pt-2">
+              {combinedRating.toFixed(1)}
+              <Star className="w-5 h-5 sm:w-6 sm:h-6 text-[#ff5500]" fill="#ff5500" />
+              <span className="text-sm text-slate-400 font-mono font-normal ml-1">
+                · {combinedCount} {isEs ? 'reseñas en Google' : 'Google reviews'}
               </span>
-
-              <div className="flex items-center gap-4 text-[11px] font-mono uppercase tracking-wider">
-                {sc?.url && (
-                  <a href={sc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-slate-400 hover:text-[#ff5500] transition-colors">
-                    <GoogleIcon size={12} /> Santa Cruz {sc.rating}★ <ArrowUpRight className="w-3 h-3" />
-                  </a>
-                )}
-                {tb?.url && (
-                  <a href={tb.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-slate-400 hover:text-[#00f0ff] transition-colors">
-                    <GoogleIcon size={12} /> Tabaiba {tb.rating}★ <ArrowUpRight className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
-            </div>
+            </span>
           )}
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-3 mb-6">
+          <LaneHeader studioKey="santacruz" stats={stats} isEs={isEs} />
           <MarqueeLane reviews={scReviews} accent={studioColor('santacruz')} onOpen={setOpenReview} setCursorHover={setCursorHover} />
+        </div>
+
+        <div className="space-y-3">
+          <LaneHeader studioKey="tabaiba" stats={stats} isEs={isEs} />
           <MarqueeLane reviews={tbReviews} accent={studioColor('tabaiba')} reverse onOpen={setOpenReview} setCursorHover={setCursorHover} />
         </div>
       </div>

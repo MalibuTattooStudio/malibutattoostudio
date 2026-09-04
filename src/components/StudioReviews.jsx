@@ -46,6 +46,18 @@ export default function StudioReviews({ studio, accent, setCursorHover, language
         {visible.map((r) => (
           <ReviewCard key={r.id} review={r} accent={accent} onOpen={setOpenReview} setCursorHover={setCursorHover} fluid />
         ))}
+        {expanded && s?.url && (
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full rounded-2xl border border-dashed border-white/15 hover:border-white/30 transition-colors p-5 flex flex-col items-center justify-center gap-2 text-center"
+          >
+            <GoogleIcon size={20} />
+            <span className="text-xs font-bold text-white">{isEs ? 'Ver el resto en Google' : 'See the rest on Google'}</span>
+            <span className="text-[11px] text-slate-500 font-mono">{s.count} {isEs ? 'reseñas en total' : 'reviews in total'}</span>
+          </a>
+        )}
       </div>
 
       {reviews.length > 6 && (
@@ -54,11 +66,7 @@ export default function StudioReviews({ studio, accent, setCursorHover, language
           onClick={() => setExpanded((v) => !v)}
           className="mx-auto flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition-colors"
         >
-          <span>
-            {expanded
-              ? (isEs ? 'Ver menos' : 'Show less')
-              : `${isEs ? 'Ver todas' : 'Show all'} (${reviews.length})`}
-          </span>
+          <span>{expanded ? (isEs ? 'Ver menos' : 'Show less') : (isEs ? 'Ver más' : 'Show more')}</span>
           <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
         </button>
       )}
